@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 
-
 def burnt_score(image: np.ndarray,
                 threshold: int = 240,
                 weight: float = 1.2) -> float:
