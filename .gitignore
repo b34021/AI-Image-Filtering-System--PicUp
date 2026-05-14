@@ -1,0 +1,28 @@
+# תיקיית סביבת וירטואלית
+.venv/
+venv/
+ENV/
+env/
+
+# קבצי Python זמניים
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.log
+
+# IDE / Editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# קבצים אישיים/חבילות מותקנות
+pip-log.txt
+*.env
+*.DS_Store
