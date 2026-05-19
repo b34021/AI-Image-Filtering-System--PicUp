@@ -84,3 +84,68 @@ if __name__ == "__main__":
 
     for img in result:
         print(img["filename"])
+
+print("------------main----------------")
+
+def best_image_per_person(
+    images_folder,
+    score_func,
+    threshold=0.5
+):
+
+    supported = (".jpg", ".jpeg", ".png", ".webp")
+
+    groups = []  # כל קבוצה = אדם אחד
+
+    for file in os.listdir(images_folder):
+
+        if not file.lower().endswith(supported):
+            continue
+
+        path = os.path.join(images_folder, file)
+
+        encoding = get_face_encoding(path)
+
+        if encoding is None:
+            continue
+
+        score = score_func(path)
+
+        matched = False
+
+        for group in groups:
+
+            dist = np.linalg.norm(encoding - group["rep"])
+
+            if dist < threshold:
+
+                group["images"].append({
+                    "path": path,
+                    "encoding": encoding,
+                    "score": score
+                })
+
+                matched = True
+                break
+
+        if not matched:
+
+            groups.append({
+                "rep": encoding,
+                "images": [{
+                    "path": path,
+                    "encoding": encoding,
+                    "score": score
+                }]
+            })
+
+    # לבחור תמונה הכי טובה מכל אדם
+    result = []
+
+    for group in groups:
+
+        best = max(group["images"], key=lambda x: x["score"])
+
+        result.append(best["path"])
+
+    return result

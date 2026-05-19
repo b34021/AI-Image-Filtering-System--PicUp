@@ -19,16 +19,9 @@ def burnt_score(image_path: str,
     score = np.clip(bright_ratio * weight, 0, 1)
 
     return float(score)
-# בדיקה על תמונה אחת
 
-image = cv2.imread(r"C:\Users\weingertenb\Desktop\Chaplin_The_Kid.jpg")
 
-if image is None:
-    raise Exception("image not loaded")
 
-score = burnt_score(image)
-
-print("Burn score:", score)
 
 r"""
 print("-----------a fuw images:----------")
