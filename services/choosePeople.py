@@ -1,5 +1,5 @@
 
-#1
+
 import os
 from PIL import Image
 import imagehash
@@ -84,51 +84,68 @@ if __name__ == "__main__":
 
     for img in result:
         print(img["filename"])
-#2
-import imagehash
-from PIL import Image
 
+print("------------main----------------")
 
-def remove_similar_images_from_list(image_paths, hashfunc=imagehash.phash, hash_size=8, max_distance=5):
-    """
-    מסירה תמונות זהות או כמעט זהות מתוך רשימה.
+def best_image_per_person(
+    images_folder,
+    score_func,
+    threshold=0.5
+):
 
-    :param image_paths: רשימה של נתיבי תמונות
-    :param hashfunc: פונקציית hash (default: phash)
-    :param hash_size: גודל hash
-    :param max_distance: המרחק המקסימלי בין hashes כדי להיחשב כפולות
-    :return: רשימה חדשה של תמונות ייחודיות
-    """
-    unique_hashes = []
-    unique_images = []
+    supported = (".jpg", ".jpeg", ".png", ".webp")
 
-    for path in image_paths:
-        try:
-            img = Image.open(path)
-            img_hash = hashfunc(img, hash_size=hash_size)
+    groups = []  # כל קבוצה = אדם אחד
 
-            # בדיקה מול כל ה‑hashes הייחודיים הקיימים
-            is_duplicate = False
-            for h in unique_hashes:
-                if img_hash - h <= max_distance:
-                    is_duplicate = True
-                    break
+    for file in os.listdir(images_folder):
 
-            if not is_duplicate:
-                unique_hashes.append(img_hash)
-                unique_images.append(path)
-        except Exception as e:
-            print(f"Error processing {path}: {e}")
+        if not file.lower().endswith(supported):
+            continue
 
-    return unique_images
+        path = os.path.join(images_folder, file)
 
+        encoding = get_face_encoding(path)
 
-# דוגמה לשימוש
-image_list = [
-    r"C:\Users\fisherm\Desktop\b.jpg",
-    r"C:\Users\fisherm\Desktop\similar_b.jpg",
-    r"C:\Users\fisherm\Desktop\unique.jpg"
-]
+        if encoding is None:
+            continue
 
-unique_images = remove_similar_images_from_list(image_list, max_distance=5)
-print(unique_images)
+        score = score_func(path)
+
+        matched = False
+
+        for group in groups:
+
+            dist = np.linalg.norm(encoding - group["rep"])
+
+            if dist < threshold:
+
+                group["images"].append({
+                    "path": path,
+                    "encoding": encoding,
+                    "score": score
+                })
+
+                matched = True
+                break
+
+        if not matched:
+
+            groups.append({
+                "rep": encoding,
+                "images": [{
+                    "path": path,
+                    "encoding": encoding,
+                    "score": score
+                }]
+            })
+
+    # לבחור תמונה הכי טובה מכל אדם
+    result = []
+
+    for group in groups:
+
+        best = max(group["images"], key=lambda x: x["score"])
+
+        result.append(best["path"])
+
+    return result
