@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 from db import get_collection
 from storage import upload_to_s3
-from config import LOCAL_IMAGE_DIR, COLLECTION_NAME
+from services.config import LOCAL_IMAGE_DIR, COLLECTION_NAME
 
 collection = get_collection(COLLECTION_NAME)
 
