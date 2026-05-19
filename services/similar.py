@@ -1,20 +1,47 @@
 import imagehash
 from PIL import Image
 
-def check_image_similarity(image_path1, image_path2):
-    # טוען את התמונות
-    image1 = Image.open(image_path1)
-    image2 = Image.open(image_path2)
 
-    # מחולל את ה-hash לכל תמונה
-    hash1 = imagehash.average_hash(image1)
-    hash2 = imagehash.average_hash(image2)
+def remove_similar_images_from_list(image_paths, hashfunc=imagehash.phash, hash_size=8, max_distance=5):
+    """
+    מסירה תמונות זהות או כמעט זהות מתוך רשימה.
 
-    # מחשב את המרחק בין ה-hashes
-    difference = hash1 - hash2
-    return difference
+    :param image_paths: רשימה של נתיבי תמונות
+    :param hashfunc: פונקציית hash (default: phash)
+    :param hash_size: גודל hash
+    :param max_distance: המרחק המקסימלי בין hashes כדי להיחשב כפולות
+    :return: רשימה חדשה של תמונות ייחודיות
+    """
+    unique_hashes = []
+    unique_images = []
 
-image_path_n1 = r'C:\Users\fisherm\Desktop\b.jpg'
-image_path_n2 = r'C:\Users\fisherm\Desktop\unsplash_stock_photos-1024x683.jpg'
-similarity = check_image_similarity(image_path_n1, image_path_n2)
-print(f"The hash difference between images: {similarity}")
+    for path in image_paths:
+        try:
+            img = Image.open(path)
+            img_hash = hashfunc(img, hash_size=hash_size)
+
+            # בדיקה מול כל ה‑hashes הייחודיים הקיימים
+            is_duplicate = False
+            for h in unique_hashes:
+                if img_hash - h <= max_distance:
+                    is_duplicate = True
+                    break
+
+            if not is_duplicate:
+                unique_hashes.append(img_hash)
+                unique_images.append(path)
+        except Exception as e:
+            print(f"Error processing {path}: {e}")
+
+    return unique_images
+
+
+# דוגמה לשימוש
+image_list = [
+    r"C:\Users\fisherm\Desktop\b.jpg",
+    r"C:\Users\fisherm\Desktop\similar_b.jpg",
+    r"C:\Users\fisherm\Desktop\unique.jpg"
+]
+
+unique_images = remove_similar_images_from_list(image_list, max_distance=5)
+print(unique_images)
