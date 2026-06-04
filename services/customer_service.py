@@ -1,20 +1,23 @@
+from dto.customerDTO import CustomerDTO
 from repository.customer_repository import CustomerRepository
-
+from models.customer import Customer
 class CustomerService:
     def __init__(self):
         self.repo = CustomerRepository()
 
-    async def create(self, data: dict):
-        return await self.repo.create(data)
+    async def create(self, data:CustomerDTO ):
+        customer=Customer(**data.model_dump())
+        return await self.repo.create(customer)
 
     async def list_all(self):
         return await self.repo.get_all()
 
-    async def get_by_id(self, customer_id: int):
+    async def get_by_id(self, customer_id: str):
         return await self.repo.get(customer_id)
 
-    async def update(self, customer_id: int, data: dict):
+    async def update(self, customer_id: str, data: Customer):
+        data = data.dict()
         return await self.repo.update(customer_id, data)
 
-    async def remove(self, customer_id: int):
+    async def remove(self, customer_id: str):
         return await self.repo.delete(customer_id)

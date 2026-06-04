@@ -1,6 +1,2 @@
-# created by virtualenv automatically
-*.idea/workspace.xml
-.venv/
-.idea/
-__pycache__/
-*.pyc
+# Created by venv; see https://docs.python.org/3/library/venv.html
+*
