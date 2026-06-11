@@ -46,3 +46,34 @@ if detect_closed_eyes(r"O:\share\project miri and brachy\images\yoav_0051.JPG"):
     print("עיניים סגורות")
 else:
     print("עיניים פתוחות")
+
+
+#2-מחזיר 0-עיניים סגורות, 1-עיניים פתןחות
+def detect_closed_eyes(image_path, threshold=0.2):
+    img = cv2.imread(image_path)
+    if img is None:
+        raise ValueError("לא ניתן לטעון תמונה")
+
+    mp_image = mp.Image.create_from_file(image_path)
+    result = detector.detect(mp_image)
+
+    if not result.face_landmarks:
+        return 0  # אין פנים נחשבים כעיניים סגורות
+
+    landmarks = result.face_landmarks[0]
+
+    left_ear = eye_aspect_ratio(landmarks, LEFT_EYE)
+    right_ear = eye_aspect_ratio(landmarks, RIGHT_EYE)
+
+    # אם שתי העיניים מעל הסף, נחשבות פתוחות
+    if left_ear >= threshold or right_ear >= threshold:
+        return 1  # עיניים פתוחות
+    else:
+        return 0  # עיניים סגורות
+#דוגמא לשימוש:
+status = detect_closed_eyes(r"O:\share\project miri and brachy\images\yoav_0051.JPG")
+
+if status == 1:
+    print("עיניים פתוחות")
+else:
+    print("עיניים סגורות")

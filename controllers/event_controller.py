@@ -49,7 +49,7 @@ async def build_images(request: BuildRequest):
         event_id=request.event_id
     )
     
-    if result.get("status") == "error":
-        raise HTTPException(status_code=400, detail=result.get("message"))
+    # if result.get("status") == "error":
+    #     raise HTTPException(status_code=400, detail=result.get("message"))
     
     return result
