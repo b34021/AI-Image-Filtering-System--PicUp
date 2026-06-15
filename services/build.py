@@ -17,6 +17,8 @@ from services.rename_images import clean_filename
 from services.burnt import Burnt
 from services.sharpness import Sharpness
 #from services.close_eyes import detect_closed_eyes
+from services.selected_people_score import calculate_selected_people_score
+
 
 burnt = Burnt()
 sharpness = Sharpness()
@@ -126,10 +128,20 @@ class Build:
             for image in category_images:
                 burnt_score_value = burnt.burnt_score(image_path=image)
                 sharpness_value = sharpness.calculate_sharpness_laplacian(image_path=image)
+                selected_people_score = 0.0
+
+                if category == "dance":
+                    selected_people_score = (
+                        calculate_selected_people_score(
+                            image_path=full_path,
+                            selected_embeddings=selected_embeddings
+                        )
+                    )
                 """
                 closed_eyes_score = None
-                if category == "bride_chair":
+                if category in ("bride_chair", "yichud", "meal"):
                     closed_eyes_score = close_eyes_detector.detect_closed_eyes(image_path=image)
+                    
                 """
         for image in images:
             full_path = os.path.join(self.path, image)
@@ -146,7 +158,8 @@ class Build:
                     "image_name": image,
                     "burnt_score": burnt_score_value,
                     "sharpness_score": sharpness_value,
-                    #"closed_eyes_score": closed_eyes_score
+                    #"closed_eyes_score": closed_eyes_score,
+                    "selected_people_score": selected_people_score
 
                 })
 

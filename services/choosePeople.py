@@ -138,6 +138,7 @@ def remove_duplicates_fast(
 
 def best_image_per_person(
     images_folder,
+    selected_embeddings=None,
     face_threshold=0.6
 ):
 
