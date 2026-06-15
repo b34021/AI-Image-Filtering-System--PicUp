@@ -1,4 +1,4 @@
-#!Y:\ברכי ומירי1\.venv\Scripts\python.exe
+#!C:\projects\PIC_UP\.venv\Scripts\python.exe
 from __future__ import absolute_import, division, print_function
 
 from PIL import Image

@@ -3,9 +3,10 @@ from pydantic import EmailStr
 from typing import Optional
 
 class Customer(Document):
-    id: int
+    id: str
     firstName: str
     lastName: str
+    password: str
     phone: str
     email: Optional[EmailStr]
 

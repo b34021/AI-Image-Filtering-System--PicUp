@@ -46,6 +46,5 @@ async def init_db():
         CategoryOfEvent
     ])
 
-@app.on_event("startup")
-async def on_startup():
-    await init_db()
+import asyncio
+asyncio.run(init_db())

@@ -3,22 +3,23 @@ import numpy as np
 
 import cv2
 import numpy as np
+class Burnt:
+    @staticmethod
+    def burnt_score(image_path: str,
+                    threshold: int = 240,
+                    weight: float = 1.2) -> float:
 
-def burnt_score(image_path: str,
-                threshold: int = 240,
-                weight: float = 1.2) -> float:
+        image = cv2.imread(image_path)
 
-    image = cv2.imread(image_path)
+        if image is None:
+            raise ValueError(f"Image not loaded: {image_path}")
 
-    if image is None:
-        raise ValueError(f"Image not loaded: {image_path}")
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        bright_ratio = np.mean(gray >= threshold)
+        score = np.clip(bright_ratio * weight, 0, 1)
 
-    bright_ratio = np.mean(gray >= threshold)
-    score = np.clip(bright_ratio * weight, 0, 1)
-
-    return float(score)
+        return float(score)
 
 
 
