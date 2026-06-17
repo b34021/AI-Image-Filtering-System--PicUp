@@ -5,6 +5,7 @@ from dto.buildRequestDTO import BuildRequest
 router = APIRouter(prefix="/events", tags=["Events"])
 event_service = EventService()
 buildService = Build()
+
 @router.post("/")
 async def create_event(event_data: dict):
     return await event_service.create_event(event_data)

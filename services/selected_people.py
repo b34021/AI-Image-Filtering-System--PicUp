@@ -8,7 +8,7 @@ app = FaceAnalysis(name="buffalo_l")
 app.prepare(ctx_id=0, det_size=(640, 640))
 
 
-def get_embedding(image_path: str):
+def get_face_embedding(image_path: str):
 
     img = cv2.imread(image_path)
 

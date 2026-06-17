@@ -6,10 +6,29 @@ import numpy as np
 from PIL import Image
 import imagehash
 from insightface.app import FaceAnalysis
-
+from services.selected_people import get_face_embedding
 from services.scoring import get_image_score
+from repository.people_repository import PeopleRepository
+from services.selected_people import get_face_embedding
+
+os.environ["INSIGHTFACE_HOME"] = r"O:\share\project miri and brachy\buffalo_choose_people"
+repo = PeopleRepository()
 
 
+async def save_selected_people(cust_id, event_id, image_paths):
+
+    embeddings = []
+
+    for path in image_paths:
+
+        emb = get_face_embedding(path)
+
+        if emb is not None:
+            embeddings.append(emb.tolist())  # חשוב אם זה numpy array
+
+    await repo.save_selected(cust_id, event_id, embeddings)
+
+    return {"status": "ok"}
 # =========================================================
 # FACE MODEL
 # =========================================================
@@ -27,7 +46,7 @@ app.prepare(
 # =========================================================
 # FACE EMBEDDING
 # =========================================================
-
+selected_embeddings = []
 def get_face_embedding(path):
 
     img = cv2.imread(path)

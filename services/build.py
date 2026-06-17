@@ -8,6 +8,9 @@
 לקרוא את המתודה build_event_images() שמבצעת עיבוד לכל התמונות (חישוב burnt_score ו־sharpness_score) ומחזירה רשימה של תוצאות.
 """
 import os
+
+os.environ["INSIGHTFACE_HOME"] = r"C:\projects\AI_MODELS\insightface"
+
 import cv2
 from pathlib import Path
 from typing import Dict, Any, List
@@ -18,7 +21,11 @@ from services.burnt import Burnt
 from services.sharpness import Sharpness
 #from services.close_eyes import detect_closed_eyes
 from services.selected_people_score import calculate_selected_people_score
-
+from repository.people_repository import people_repository
+from services.people_match import match_selected_people
+from services.selected_people import get_face_embedding
+from services.ml_config import *
+from services.ml_config import INSIGHTFACE_HOME
 
 burnt = Burnt()
 sharpness = Sharpness()
@@ -35,7 +42,7 @@ class Build:
         self.event_id = event_id
         self.path = path
 
-    def build_event_images(self) -> List[Dict[str, Any]]:
+    async def build_event_images(self) -> List[Dict[str, Any]]:
         """
         בנה דמויות לאירוע ספציפי של לקוח
         עבור על כל תמונה, חשב את ציון burnt וחזר עם רשימה של ניתוב וציון
@@ -113,6 +120,11 @@ class Build:
                 print(f"Cannot read image: {full_path}")
                 continue
             full_path = os.path.join(self.path, image)
+
+            selected_embeddings = await people_repository.get_selected(
+                self.cust_id,
+                self.event_id
+            )
             # try:
             # כאן נזמן את הפונקציה שתקבע קטגוריה
             # category=machineLearning-פונקציה שמחזירה את שם המערך
