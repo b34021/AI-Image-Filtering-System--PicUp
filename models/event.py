@@ -1,10 +1,9 @@
 from beanie import Document
 
 class Event(Document):
-    id: int
-    clientId: int
+    clientId: str
     name: str
-    QuentityPictureChoose: int
+    quantityPictureChoose: int
     totalPictures: int
     pathToFolder: str
 

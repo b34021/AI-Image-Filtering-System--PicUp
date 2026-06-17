@@ -1,8 +1,17 @@
 from models.event import Event
 
 class EventRepository:
-    async def create_event(self, event_data: dict):
-        event = Event(**event_data)
+
+    async def create_event(self, dto: EventDTO):
+
+        event = Event(
+            clientId=dto.clientId,
+            name=dto.name,
+            quantityPictureChoose=dto.quantityPictureChoose,
+            totalPictures=dto.totalPictures,
+            pathToFolder=dto.pathToFolder
+        )
+
         await event.insert()
         return event
 

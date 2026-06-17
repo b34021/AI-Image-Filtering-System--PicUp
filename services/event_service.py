@@ -1,11 +1,13 @@
+from dto.EventDTO import EventDTO
 from repository.event_repository import EventRepository
+from dto.EventDTO import EventDTO
+from models.event import Event
 
 class EventService:
     def __init__(self):
         self.repo = EventRepository()
 
-    async def create_event(self, event_data: dict):
-        # כאן ניתן להוסיף לוגיקה נוספת לפני השמירה
+    async def create_event(self, event_data: EventDTO):
         return await self.repo.create_event(event_data)
 
     async def list_events(self):

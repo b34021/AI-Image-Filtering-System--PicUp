@@ -1,5 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from services.event_service import EventService
+from dto.EventDTO import EventDTO
+router = APIRouter(prefix="/event", tags=["Events"])
 from services.build import Build
 from dto.buildRequestDTO import BuildRequest
 router = APIRouter(prefix="/events", tags=["Events"])
@@ -7,7 +9,7 @@ event_service = EventService()
 buildService = Build()
 
 @router.post("/")
-async def create_event(event_data: dict):
+async def create_event(event_data: EventDTO):
     return await event_service.create_event(event_data)
 
 @router.get("/")

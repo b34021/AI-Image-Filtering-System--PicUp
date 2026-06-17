@@ -3,6 +3,7 @@ import os
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from beanie import init_beanie
 import motor.motor_asyncio
 from services.config import MONGO_URI, DB_NAME
@@ -24,6 +25,13 @@ from controllers.customer_of_photografer_controller import router as customer_of
 from controllers.category_of_event_controller import router as category_of_event_router
 
 app = FastAPI(title="PicUp API")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # הוספת כל ה-routers
 app.include_router(event_router)

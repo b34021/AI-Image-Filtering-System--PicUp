@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 
 class EventDTO(BaseModel):
-    client_Id: int
+    clientId: str
     name: str
-    QuantityPictureChoose: int
+    quantityPictureChoose: int
     totalPictures: int
     pathToFolder: str

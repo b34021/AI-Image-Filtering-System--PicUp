@@ -1,13 +1,35 @@
-from dto.customerDTO import CustomerDTO
+from dto.CustomerLoginRequest import CustomerLoginRequest
 from repository.customer_repository import CustomerRepository
+from dto.CustomerDTO import CustomerDTO
 from models.customer import Customer
+from fastapi import HTTPException
+
 class CustomerService:
     def __init__(self):
         self.repo = CustomerRepository()
 
     async def create(self, data:CustomerDTO ):
-        customer=Customer(**data.model_dump())
+        customer = Customer(
+            clientId=data.clientId,
+            firstName=data.firstName,
+            lastName=data.lastName,
+            email=data.email,
+            phone=data.phone,
+            password=data.password
+        )
         return await self.repo.create(customer)
+
+    async def login(self, payload: CustomerLoginRequest):
+        customer = await Customer.find_one(
+            {
+                "firstName": payload.firstName,
+                "lastName": payload.lastName,
+                "password": payload.password
+            }
+        )
+        if not customer:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+        return customer
 
     async def list_all(self):
         return await self.repo.get_all()
