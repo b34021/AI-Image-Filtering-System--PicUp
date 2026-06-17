@@ -1,8 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from services.event_service import EventService
-
+from services.build import Build
+from dto.buildRequestDTO import BuildRequest
 router = APIRouter(prefix="/events", tags=["Events"])
 event_service = EventService()
+buildService = Build()
 
 @router.post("/")
 async def create_event(event_data: dict):
@@ -32,3 +34,23 @@ async def delete_event(event_id: int):
     if not success:
         raise HTTPException(status_code=404, detail="Event not found")
     return {"message": "Event deleted"}
+
+
+@router.post("/build/images")
+async def build_images(request: BuildRequest):
+    """
+    בנה דמויות לאירוע עם path, cust_id, event_id
+    
+    :param request: BuildRequest עם path, cust_id, event_id
+    :return: תוצאות העיבוד
+    """
+    result = buildService.build_event_images(
+        path=request.path,
+        cust_id=request.cust_id,
+        event_id=request.event_id
+    )
+    
+    # if result.get("status") == "error":
+    #     raise HTTPException(status_code=400, detail=result.get("message"))
+    
+    return result
