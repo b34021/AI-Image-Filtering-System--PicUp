@@ -202,5 +202,5 @@ builder = Build(
 book = builder.build_event_images()
 
 # הדפס את התוצאות
-for r in book:
-    print(r)
+# for r in book:
+#     print(r)
